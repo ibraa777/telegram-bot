@@ -1,33 +1,45 @@
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get('/', (req, res) => {
-    res.send('🤖 Бот работает!');
-});
-
-app.listen(PORT, () => {
-    console.log(`🌐 Сервер запущен на порту ${PORT}`);
-});
-
-// ========== ТВОЙ КОД БОТА НАЧИНАЕТСЯ ЗДЕСЬ ==========
-
 const TelegramBot = require('node-telegram-bot-api');
-const fs = require('fs');
 
-// Используем переменные окружения
-const token = process.env.BOT_TOKEN || '8368154450:AAG3rOERjFH2LtSSSn4bToPW1P4CbIcEeVg';
-const CHANNEL_ID = process.env.CHANNEL_ID || '-1003527969684';
-const CHAT_ID = process.env.CHAT_ID || '-1003807236755';
-const CHANNEL_LINK = 'https://t.me/nakrutkabust07';
-const CHAT_LINK = 'https://t.me/vzrkvzaum';
-const BOT_NAME = 'Many_ssttars_bot';
-const ADMINS = [5735614564];
+// ТВОЙ ТОКЕН
+const TOKEN = '8438625108:AAGbY_8c8zNhxgh1P7UZkyeJdfDI48UJJ0A';
 
-const bot = new TelegramBot(token, { polling: true });
-const DATA_FILE = 'users.json';
-let users = {};
+console.log('🤖 Запускаю бота...');
 
-// ВСТАВЬ СЮДА ВЕСЬ КОД ИЗ ТВОЕГО bot.js ФАЙЛА
-// Скопируй ВЕСЬ код начиная с "// Загрузка данных"
-// и до конца файла
+// Создаем бота
+const bot = new TelegramBot(TOKEN, {polling: true});
+
+// Когда кто-то напишет /start
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  const name = msg.from.first_name;
+  
+  bot.sendMessage(chatId, 
+    `🎉 ПРИВЕТ, ${name}!\n\n✅ Бот работает!\n📞 Твой ID: ${chatId}\n\nПиши /help`
+  );
+});
+
+// Команда /help
+bot.onText(/\/help/, (msg) => {
+  bot.sendMessage(msg.chat.id, 
+    '📚 Команды:\n/start - начало\n/help - помощь\n/test - тест\n/ping - проверить'
+  );
+});
+
+// Команда /test
+bot.onText(/\/test/, (msg) => {
+  bot.sendMessage(msg.chat.id, '✅ Тест пройден! Бот жив!');
+});
+
+// Команда /ping
+bot.onText(/\/ping/, (msg) => {
+  bot.sendMessage(msg.chat.id, '🏓 Pong!');
+});
+
+// Когда приходит обычное сообщение (не команда)
+bot.on('message', (msg) => {
+  if (msg.text && !msg.text.startsWith('/')) {
+    bot.sendMessage(msg.chat.id, `Ты написал: "${msg.text}"`);
+  }
+});
+
+console.log('✅ Бот готов! Иди в Telegram и напиши /start своему боту');
